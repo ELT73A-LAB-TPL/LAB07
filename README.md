@@ -1,4 +1,4 @@
-# LAB06 template for ELT73A course 
+# LAB07 template for ELT73A course 
 ## Git commands
 How to config git
 ```bash
@@ -15,7 +15,7 @@ git config list --show-origin
 ```
 How to commit updates
 ```bash
-cd LAB06
+cd LAB07
 git status
 git add .
 git commit -m "My message for this commit!"
