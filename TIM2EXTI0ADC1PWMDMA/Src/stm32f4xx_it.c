@@ -268,5 +268,6 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   ADC1IN2 = AD_RES_BUFFER[1];
   voltage1 = (ADC1IN1 * 3.3) / 4095;
   voltage2 = (ADC1IN2 * 3.3) / 4095;
+  TIM2->CCR1 = ADC1IN1;  // PWM CH1
 }
 /* USER CODE END 1 */
