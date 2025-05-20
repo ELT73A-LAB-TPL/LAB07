@@ -261,6 +261,7 @@ void DMA2_Stream0_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+// https://deepbluembedded.com/stm32-adc-multi-channel-scan-continuous-mode-dma-poll-examples/
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
   // Conversion Complete & DMA Transfer Complete As Well
