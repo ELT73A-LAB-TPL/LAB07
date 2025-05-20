@@ -22,6 +22,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,7 +60,10 @@ extern DMA_HandleTypeDef hdma_adc1;
 extern ADC_HandleTypeDef hadc1;
 extern TIM_HandleTypeDef htim2;
 /* USER CODE BEGIN EV */
-
+extern bool BLUELED;
+extern uint32_t AD_RES_BUFFER[2];
+extern uint16_t ADC1IN1,ADC1IN2;
+extern float voltage1,voltage2;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -206,7 +210,7 @@ void SysTick_Handler(void)
 void EXTI0_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI0_IRQn 0 */
-
+  BLUELED = !BLUELED;
   /* USER CODE END EXTI0_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(User_KEY_EXTI0_Pin);
   /* USER CODE BEGIN EXTI0_IRQn 1 */
@@ -234,7 +238,7 @@ void ADC_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
-
+  HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, 2);
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
@@ -257,5 +261,12 @@ void DMA2_Stream0_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+  // Conversion Complete & DMA Transfer Complete As Well
+  ADC1IN1 = AD_RES_BUFFER[0];
+  ADC1IN2 = AD_RES_BUFFER[1];
+  voltage1 = (ADC1IN1 * 3.3) / 4095;
+  voltage2 = (ADC1IN2 * 3.3) / 4095;
+}
 /* USER CODE END 1 */
