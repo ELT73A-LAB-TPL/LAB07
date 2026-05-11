@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2026 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -42,9 +42,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-extern bool BLUELED;
-extern uint16_t adc1in1;
-extern float voltage;
+extern bool BLUELED; // Flag to control the blue LED
+extern uint16_t adc1in1; // Variable to store ADC value
+extern float voltage; // Variable to store calculated voltage
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -208,8 +208,7 @@ void SysTick_Handler(void)
 void EXTI0_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI0_IRQn 0 */
-  // Toggle BLUELED FLAG
-  BLUELED = !BLUELED;
+BLUELED = !BLUELED;
   /* USER CODE END EXTI0_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(User_KEY_EXTI0_Pin);
   /* USER CODE BEGIN EXTI0_IRQn 1 */
@@ -227,9 +226,9 @@ void ADC_IRQHandler(void)
   /* USER CODE END ADC_IRQn 0 */
   HAL_ADC_IRQHandler(&hadc1);
   /* USER CODE BEGIN ADC_IRQn 1 */
-  adc1in1 = HAL_ADC_GetValue(&hadc1);
-  TIM2->CCR1 = adc1in1;
-  voltage = (adc1in1*3.3)/4095;
+    adc1in1 = HAL_ADC_GetValue(&hadc1); // Read ADC value
+  TIM2->CCR1 = adc1in1; // Update PWM duty cycle
+  voltage = (adc1in1*3.3)/4095; // Convert ADC value to voltage
   /* USER CODE END ADC_IRQn 1 */
 }
 
@@ -243,7 +242,7 @@ void TIM2_IRQHandler(void)
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
-  HAL_ADC_Start_IT(&hadc1);
+HAL_ADC_Start_IT(&hadc1);
   /* USER CODE END TIM2_IRQn 1 */
 }
 

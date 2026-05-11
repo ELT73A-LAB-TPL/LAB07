@@ -70,6 +70,6 @@ set gpio parameters "PA0-WKUP" "GPIO_PuPd" "GPIO_PULLUP"
 set gpio parameters "PA0-WKUP" "GPIO_Label" "User KEY EXTI0"
 project name TIM2EXTI0ADC1PWM 
 project toolchain "CMake" 
-project path C:\Users\ruseler\Documents\GitHub\LAB06\ 
-export script C:\Users\ruseler\Documents\GitHub\LAB06\TIM2EXTI0ADC1PWM\LoadedScript.txt 
-project generate C:\Users\ruseler\Documents\GitHub\LAB06\TIM2EXTI0ADC1PWM 
+project path C:\Users\ruseler\Documents\GitHub\LAB07\ 
+export script C:\Users\ruseler\Documents\GitHub\LAB07\TIM2EXTI0ADC1PWM\LoadedScript.txt 
+# project generate C:\Users\ruseler\Documents\GitHub\LAB07\TIM2EXTI0ADC1PWM 
