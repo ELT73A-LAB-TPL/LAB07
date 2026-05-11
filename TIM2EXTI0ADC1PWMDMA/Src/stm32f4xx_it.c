@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2025 STMicroelectronics.
+  * Copyright (c) 2026 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -42,7 +42,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+extern bool BLUELED;
+extern uint32_t AD_RES_BUFFER[2];
+extern uint16_t ADC1IN1,ADC1IN2;
+extern float voltage1,voltage2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -60,10 +63,7 @@ extern DMA_HandleTypeDef hdma_adc1;
 extern ADC_HandleTypeDef hadc1;
 extern TIM_HandleTypeDef htim2;
 /* USER CODE BEGIN EV */
-extern bool BLUELED;
-extern uint32_t AD_RES_BUFFER[2];
-extern uint16_t ADC1IN1,ADC1IN2;
-extern float voltage1,voltage2;
+
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -238,11 +238,11 @@ void ADC_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
-  HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, 2);
+HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, 2);
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
-
+  
   /* USER CODE END TIM2_IRQn 1 */
 }
 
@@ -252,7 +252,12 @@ void TIM2_IRQHandler(void)
 void DMA2_Stream0_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
-
+  // Conversion Complete & DMA Transfer Complete As Well
+  ADC1IN1 = AD_RES_BUFFER[0];
+  ADC1IN2 = AD_RES_BUFFER[1];
+  voltage1 = (ADC1IN1 * 3.3) / 4095;
+  voltage2 = (ADC1IN2 * 3.3) / 4095;
+  TIM2->CCR1 = ADC1IN1;  // PWM CH1
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc1);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
@@ -261,14 +266,5 @@ void DMA2_Stream0_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-// https://deepbluembedded.com/stm32-adc-multi-channel-scan-continuous-mode-dma-poll-examples/
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
-{
-  // Conversion Complete & DMA Transfer Complete As Well
-  ADC1IN1 = AD_RES_BUFFER[0];
-  ADC1IN2 = AD_RES_BUFFER[1];
-  voltage1 = (ADC1IN1 * 3.3) / 4095;
-  voltage2 = (ADC1IN2 * 3.3) / 4095;
-  TIM2->CCR1 = ADC1IN1;  // PWM CH1
-}
+
 /* USER CODE END 1 */
