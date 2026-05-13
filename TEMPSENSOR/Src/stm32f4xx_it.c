@@ -258,11 +258,23 @@ void DMA2_Stream0_IRQHandler(void)
   ADC1IN1 = AD_RES_BUFFER[0];
   TEMPSENSOR = AD_RES_BUFFER[1];
   VREFINT = AD_RES_BUFFER[2];
-   TIM2->CCR1 = ADC1IN1;  // PWM CH1
+
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc1);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
+   voltage1 = (ADC1IN1 * 3.3) / 4095;
+  // 1. Calculate the actual VREF (VDDA)
+  // This compensates for power supply fluctuations
+  v_ref = (V_REF_INT * 4095.0f) / (float)VREFINT;
 
+  // 2. Convert raw temperature sensor value to voltage
+  v_sense = ((float)TEMPSENSOR * v_ref) / 4095.0f;
+
+  // 3. Final Temperature in Celsius
+  // Note: Some datasheets use (V_sense - V_25) / Slope + 25.
+  // Check your specific RM; usually, if Slope is positive, it's (V_sense - V_at_25).
+  temp = ((v_sense - V_AT_25C) * 1000.0f / AVG_SLOPE) + 25.0f;
+  TIM2->CCR1 = ADC1IN1;  // PWM CH1
   /* USER CODE END DMA2_Stream0_IRQn 1 */
 }
 
