@@ -32,7 +32,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define AVG_SLOPE   2.5f     // mV/°C
+#define V_AT_25C    0.76f    // Volts
+#define V_REF_INT   1.21f    // Internal reference voltage
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -44,8 +46,8 @@
 /* USER CODE BEGIN PV */
 extern bool BLUELED;
 extern uint32_t AD_RES_BUFFER[2];
-extern uint16_t ADC1IN1,TEMPSENSOR;
-extern float voltage1,temp;
+extern uint16_t ADC1IN1,TEMPSENSOR,VREFINT;
+extern float voltage1,v_ref,v_sense,temp;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -210,7 +212,7 @@ void SysTick_Handler(void)
 void EXTI0_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI0_IRQn 0 */
-BLUELED = !BLUELED;
+ BLUELED = !BLUELED;
   /* USER CODE END EXTI0_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(User_KEY_EXTI0_Pin);
   /* USER CODE BEGIN EXTI0_IRQn 1 */
@@ -242,7 +244,7 @@ void TIM2_IRQHandler(void)
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
-HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, 2);
+HAL_ADC_Start_DMA(&hadc1, (uint32_t *)AD_RES_BUFFER, 2);
   /* USER CODE END TIM2_IRQn 1 */
 }
 
@@ -252,11 +254,10 @@ HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER, 2);
 void DMA2_Stream0_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
+  // Conversion Complete & DMA Transfer Complete As Well
   ADC1IN1 = AD_RES_BUFFER[0];
   TEMPSENSOR = AD_RES_BUFFER[1];
-  voltage1 = (ADC1IN1 * 3.3) / 4095;
-  temp = (TEMPSENSOR * 3.3) / 4095;
-  TIM2->CCR1 = ADC1IN1;  // PWM CH1 duty cycle
+   TIM2->CCR1 = ADC1IN1;  // PWM CH1
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc1);
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
