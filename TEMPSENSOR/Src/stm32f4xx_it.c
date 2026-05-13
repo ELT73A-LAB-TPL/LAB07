@@ -45,7 +45,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 extern bool BLUELED;
-extern uint32_t AD_RES_BUFFER[2];
+extern uint32_t AD_RES_BUFFER[3];
 extern uint16_t ADC1IN1,TEMPSENSOR,VREFINT;
 extern float voltage1,v_ref,v_sense,temp;
 /* USER CODE END PV */
@@ -244,7 +244,7 @@ void TIM2_IRQHandler(void)
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
-HAL_ADC_Start_DMA(&hadc1, (uint32_t *)AD_RES_BUFFER, 2);
+HAL_ADC_Start_DMA(&hadc1, (uint32_t *)AD_RES_BUFFER, 3);
   /* USER CODE END TIM2_IRQn 1 */
 }
 
@@ -257,6 +257,7 @@ void DMA2_Stream0_IRQHandler(void)
   // Conversion Complete & DMA Transfer Complete As Well
   ADC1IN1 = AD_RES_BUFFER[0];
   TEMPSENSOR = AD_RES_BUFFER[1];
+  VREFINT = AD_RES_BUFFER[2];
    TIM2->CCR1 = ADC1IN1;  // PWM CH1
   /* USER CODE END DMA2_Stream0_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_adc1);
